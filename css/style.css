@@ -43,7 +43,11 @@
 /*                      BASE                              
 /*=================================================================*/
 
-
+*{
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
 
 
 /* width */
@@ -689,7 +693,7 @@ header.desktop-header-2 .vertical-menu li .nav-link.active i {
   opacity: 1;
 }
 header.desktop-header-2 .footer {
-  margin-top: auto;
+  margin-top: x;
   position: relative;
 }
 header.desktop-header-2 .copyright {
