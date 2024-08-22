@@ -877,7 +877,9 @@
 
 					<div class="col-md-8">
 						<!-- Contact Form -->
-						<form id="submit-form"  class="contact-form mt-6" >
+						<form id="submit-form" action="https://api.web3forms.com/submit" method="post" class="contact-form mt-6" >
+							<input type="hidden" name="access_key" value="0558ed90-23bb-4d60-a529-402cb5d9d7db">
+
 
 							<div class="messages"></div>
 
@@ -923,6 +925,7 @@
 
 							<button type="submit" name="submit" id="submit" value="Submit" class="btn btn-default">Send
 								Message</button><!-- Send Button -->
+								<div id="result"></div>
 
 						</form>
 						<!-- Contact Form end -->
@@ -1013,7 +1016,7 @@
 	<script src="js/custom.js"></script>
 
 
-	<script>
+	<!-- <script>
 		$("#submit-form").submit((e) => {
 			e.preventDefault()
 			$.ajax({
@@ -1022,7 +1025,7 @@
 				method: "post",
 				success: function (response) {
 					// alert("Form submitted successfully")
-					// window.location.reload()
+					//window.location.reload()
 					 window.location.href = "last.html"
 				},
 				error: function (err) {
@@ -1031,10 +1034,81 @@
 				}
 			})
 		})
-	</script>
+	</script> -->
 
 
+	<script>
+		const form = document.getElementById('submit-form');
+		const result = document.getElementById('result');
+		
+		  const formData = new FormData(form);
+		  form.addEventListener('submit', function(e) {
+      e.preventDefault();
 
+      const form = e.target;
+      const formData = new FormData(form);
+
+      
+    
+    // Check for form validity
+    if (!form.checkValidity()) {
+     result.innerHTML = "Please fill out all required fields correctly!";
+     return;
+     
+    }
+    
+    const name = form.querySelector('#InputName').value.trim();
+    const email = form.querySelector('#InputEmail').value.trim();
+    const message = form.querySelector('#InputMessage').value.trim();
+   
+   
+    if (!name.match(/^[A-Za-z ]+$/)) {
+        result.innerHTML = 'Name should contain only letters and spaces.';
+        return;
+    }
+   
+    if (!email.match(/^([a-zA-Z0-9_]+)@([a-zA-Z0-9]+)\.([a-zA-Z]+)(.[a-zA-Z]+)?$/)) {
+           result.innerHTML = "Email should be correctly entered";
+           return;
+       }
+       if (message.length < 10) {
+           result.innerHTML = "Message should be at least 10 characters long.";
+           return;
+       }
+
+		  const object = Object.fromEntries(formData);
+		  const json = JSON.stringify(object);
+		  result.innerHTML = "Please wait..."
+		
+			fetch('https://api.web3forms.com/submit', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json'
+					},
+					body: json
+				})
+				.then(async (response) => {
+					let json = await response.json();
+					if (response.status == 200) {
+						result.innerHTML = "Form submitted successfully";
+					} else {
+						console.log(response);
+						result.innerHTML = json.message;
+					}
+				})
+				.catch(error => {
+					console.log(error);
+					result.innerHTML = "Something went wrong!";
+				})
+				.then(function() {
+					form.reset();
+					setTimeout(() => {
+						result.style.display = "none";
+					}, 3000);
+				});
+		});
+		</script>
 
 
 
